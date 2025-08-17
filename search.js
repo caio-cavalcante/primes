@@ -36,3 +36,5 @@ function getPrimeIndex(number, db) {
         return `${number} is not in the database or is not a prime number.`;
     }
 }
+
+const primeDatabase = loadPrimeDB();
