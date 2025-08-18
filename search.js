@@ -1,19 +1,12 @@
-const fs = require('fs');
-
-function loadPrimeDB() {
+async function loadPrimeDB() {
     try {
-        const jsonData = fs.readFileSync('primes_db.json', 'utf8');
-        const primeArray = JSON.parse(jsonData);
-        const primeMap = new Map();
-
-        for (const prime of primeArray) {
-            primeMap.set(prime.index, prime.value);
-        }
+        const response = await fetch('./primes_db.json'); // set the location of your file
+        const primeData = await response.json();
 
         console.log('Database loaded and ready for search.');
-        return primeMap;
+        return primeData;
     } catch (error) {
-        console.error('Error loading database. Run "node main.js" first.', error);
+        console.error('Error loading database. May need to run "node main.js" first.', error); // either not created, wrong path or different name
         return null;
     }
 }
@@ -28,10 +21,16 @@ const suffix = (n) => {
     }
 };
 
-function getPrimeIndex(number, db) {
-    if(db.has(number)) {
-        const index = db.get(number);
-        return `${number} is the ${index}${suffix(index)} prime number.`;
+export async function getPrimeIndex(number) {
+    const primeDataBase = await loadPrimeDB();
+
+    if (primeDataBase === null) {
+        return "Database not loaded.";
+    }
+
+    const primeObj = primeDataBase.find(prime => prime.value === Number(number));
+    if (primeObj) {
+        return `${number} is the ${primeObj.index}${suffix(primeObj.index)} prime number.`;
     } else {
         return `${number} is not in the database or is not a prime number.`;
     }
