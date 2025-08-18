@@ -35,5 +35,3 @@ export async function getPrimeIndex(number) {
         return `${number} is not in the database or is not a prime number.`;
     }
 }
-
-const primeDatabase = loadPrimeDB();
